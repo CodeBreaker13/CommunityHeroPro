@@ -1,0 +1,141 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Rajdhani:wght@500;600;700&display=swap');
+@import 'leaflet/dist/leaflet.css';
+
+@layer base {
+  :root {
+    --brand:       #E65C00;
+    --brand-light: #FF8C00;
+    --brand-dark:  #B34500;
+    --accent:      #22c55e;
+    --accent-dark: #16a34a;
+    --bg-dark:     #0c0a06;
+    --bg-card:     #141209;
+    --bg-card2:    #1c1810;
+    --border:      rgba(230,92,0,0.25);
+    --border-acc:  rgba(34,197,94,0.2);
+    --tx:          #F5EDD6;
+    --tx2:         #C9A96E;
+    --tx3:         #7a6540;
+  }
+  body {
+    font-family: 'Inter', system-ui, sans-serif;
+    background: var(--bg-dark);
+    color: var(--tx);
+    min-height: 100vh;
+    position: relative;
+    overflow-x: hidden;
+  }
+  /* India roads photo overlay */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: url('https://images.unsplash.com/photo-1567427017947-545c5f8d16ad?w=1920&q=60');
+    background-size: cover;
+    background-position: center;
+    opacity: 0.07;
+    z-index: 0;
+    pointer-events: none;
+  }
+  body::after {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background:
+      repeating-linear-gradient(90deg, transparent 0, transparent 60px, rgba(230,92,0,0.03) 60px, rgba(230,92,0,0.03) 62px),
+      repeating-linear-gradient(180deg, transparent 0, transparent 40px, rgba(34,197,94,0.02) 40px, rgba(34,197,94,0.02) 41px);
+    z-index: 0;
+    pointer-events: none;
+  }
+  * { box-sizing: border-box; }
+  #root { position: relative; z-index: 1; }
+}
+
+@layer components {
+  .card {
+    @apply rounded-2xl border p-5;
+    background: rgba(20,18,9,0.92);
+    border-color: var(--border);
+    backdrop-filter: blur(4px);
+  }
+  .card-accent {
+    @apply rounded-2xl border p-5;
+    background: rgba(20,18,9,0.92);
+    border-color: var(--border-acc);
+    backdrop-filter: blur(4px);
+  }
+
+  .btn-primary {
+    background: var(--brand);
+    @apply text-white font-medium px-4 py-2 rounded-xl transition-all duration-200 active:scale-95 flex items-center gap-2 justify-center;
+  }
+  .btn-primary:hover { background: var(--brand-light); }
+
+  .btn-outline {
+    @apply font-medium px-4 py-2 rounded-xl transition-all duration-200 active:scale-95 flex items-center gap-2 justify-center;
+    border: 1px solid var(--border);
+    background: rgba(255,255,255,0.04);
+    color: var(--tx2);
+  }
+  .btn-outline:hover {
+    border-color: var(--brand);
+    color: var(--brand-light);
+    background: rgba(230,92,0,0.08);
+  }
+
+  .input {
+    @apply w-full rounded-xl px-3 py-2.5 text-sm transition-all;
+    background: rgba(255,255,255,0.05);
+    border: 1px solid var(--border);
+    color: var(--tx);
+    font-family: 'Inter', sans-serif;
+  }
+  .input::placeholder { color: var(--tx3); }
+  .input:focus { outline: none; border-color: var(--brand); }
+  .input option { background: #1c1810; color: var(--tx); }
+
+  .badge-critical { @apply text-xs font-medium px-2.5 py-0.5 rounded-full; background: rgba(220,60,60,0.2); color: #f87171; border: 1px solid rgba(220,60,60,0.3); }
+  .badge-high     { @apply text-xs font-medium px-2.5 py-0.5 rounded-full; background: rgba(230,92,0,0.2); color: #fb923c; border: 1px solid rgba(230,92,0,0.3); }
+  .badge-medium   { @apply text-xs font-medium px-2.5 py-0.5 rounded-full; background: rgba(250,204,21,0.15); color: #fbbf24; border: 1px solid rgba(250,204,21,0.25); }
+  .badge-low      { @apply text-xs font-medium px-2.5 py-0.5 rounded-full; background: rgba(34,197,94,0.15); color: #4ade80; border: 1px solid rgba(34,197,94,0.25); }
+  .badge-open        { @apply text-xs font-medium px-2.5 py-0.5 rounded-full; background: rgba(255,255,255,0.08); color: #a8a29e; border: 1px solid rgba(255,255,255,0.12); }
+  .badge-inprogress  { @apply text-xs font-medium px-2.5 py-0.5 rounded-full; background: rgba(230,92,0,0.18); color: #fb923c; border: 1px solid rgba(230,92,0,0.28); }
+  .badge-resolved    { @apply text-xs font-medium px-2.5 py-0.5 rounded-full; background: rgba(34,197,94,0.15); color: #4ade80; border: 1px solid rgba(34,197,94,0.25); }
+
+  .sidebar-link {
+    @apply flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-all cursor-pointer;
+    color: var(--tx2);
+  }
+  .sidebar-link:hover { background: rgba(230,92,0,0.1); color: var(--brand-light); }
+  .sidebar-link.active { background: rgba(230,92,0,0.18); color: var(--brand-light); border-left: 2px solid var(--brand); }
+
+  /* Ticker tape */
+  .ticker-wrap { overflow: hidden; background: rgba(230,92,0,0.12); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); }
+  .ticker-inner { display: flex; gap: 48px; animation: ticker 30s linear infinite; white-space: nowrap; padding: 6px 0; }
+  @keyframes ticker { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+
+  /* Live dot */
+  .live-dot { @apply inline-block w-2 h-2 rounded-full; background: var(--accent); animation: blink 1.4s ease-in-out infinite; }
+  @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.2} }
+
+  /* Stat cards */
+  .stat-card { @apply rounded-xl p-4; background: rgba(20,18,9,0.9); border: 1px solid var(--border); }
+
+  /* Chat bubbles */
+  .chat-bubble-user { @apply rounded-2xl px-4 py-2.5 text-sm max-w-xs ml-auto; background: var(--brand); color: #fff; border-radius: 16px 16px 4px 16px; }
+  .chat-bubble-ai   { @apply rounded-2xl px-4 py-2.5 text-sm max-w-xs; background: rgba(255,255,255,0.06); border: 1px solid var(--border); color: var(--tx); border-radius: 16px 16px 16px 4px; }
+
+  /* Section heading */
+  .sec-heading { font-family: 'Rajdhani', sans-serif; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: var(--brand-light); font-size: 11px; }
+}
+
+.leaflet-container { border-radius: 1rem; z-index: 0; filter: hue-rotate(20deg) saturate(0.7) brightness(0.7); }
+
+/* Scrollbar */
+::-webkit-scrollbar { width: 4px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
