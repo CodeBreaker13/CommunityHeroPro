@@ -132,10 +132,4 @@ MethodEndpointPurposeGET/api/healthHealth checkGET/api/issuesList issues, filter
 
 9. Security note
 
-backend/.env is excluded from version control via .gitignore. Only .env.example, containing placeholder values, is committed. Real API keys should never be committed or shared.
-
-10. License
-
-MIT License.
-
-Built for Smart India Hackathon and similar community problem-solving challenges.
+backend/.env is excluded from version control via .gitignore. Only .env.example, containing placeholder values, is committed. Real API keys should never be committed or share it.
